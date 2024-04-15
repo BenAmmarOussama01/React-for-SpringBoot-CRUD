@@ -1,19 +1,34 @@
 import React,{useState,useEffect} from 'react'
-import { listEmployeees } from '../services/EmployeeService'
+import { deleteEmployee, listEmployeees } from '../services/EmployeeService'
 import {useNavigate} from'react-router-dom'
 
 const ListEmployeeComponent = () => {
     const[employees,setEmployees]=useState([])
     const navigator=useNavigate();
     useEffect(()=>{
-      listEmployeees().then((Response)=>{
-            setEmployees(Response.data);
-            console.log('use effect called');
-      }).catch(error=>console.error(error))
+      console.log('use effect from List called')
+      getAllEmployees()
 
     },[])
+    function getAllEmployees(){
+      listEmployeees().then((Response)=>{
+            setEmployees(Response.data);
+      }).catch(error=>console.error(error))
+    }
+   
     function addNewEmlpoyee(){
       navigator('/add-employee')
+    }
+    function updateEmployee(id){
+      navigator(`/edit-employee/${id}`)
+    }
+    function removeEmployee(id){
+      console.log(id);
+      deleteEmployee(id).then((response)=>{
+            console.log(response.data);
+            getAllEmployees();
+
+      }).catch(error=>console.error(error));
     }
   return (
     <div className='container'>
@@ -26,6 +41,7 @@ const ListEmployeeComponent = () => {
                         <th>Employee first Name</th>
                         <th>Employee Last Name</th>
                         <th>Employee Email Id</th>
+                        <th>Actions</th>
                   </tr>
             </thead>
             <tbody>
@@ -37,6 +53,9 @@ const ListEmployeeComponent = () => {
                         <td>{employee.firstName}</td>
                         <td>{employee.lastName}</td>
                         <td>{employee.email}</td>
+                        <td><button className='btn btn-info'onClick={()=>updateEmployee(employee.id)}>Update</button>
+                            <button className='btn btn-danger'onClick={()=>removeEmployee(employee.id)}style={{marginLeft:'10px'}}>Delete</button>
+                        </td>
 
                      </tr>
                   
