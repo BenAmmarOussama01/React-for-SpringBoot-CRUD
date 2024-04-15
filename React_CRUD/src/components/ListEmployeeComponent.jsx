@@ -1,44 +1,37 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
+import { listEmployeees } from '../services/EmployeeService'
+import {useNavigate} from'react-router-dom'
 
 const ListEmployeeComponent = () => {
-      const dummyData=[
-            {
-                  "id": 1,
-                  "firstName": "Oussama",
-                  "lastName": "Ben Ammar",
-                  "email": "oussammabenammar@gmail.com"
-              },
-              {
-                  "id": 2,
-                  "firstName": "Omar",
-                  "lastName": "Ben Ammar",
-                  "email": "Omarbenammar@gmail.com"
-              },
-              {
-                  "id": 3,
-                  "firstName": "test",
-                  "lastName": "Bentest",
-                  "email": "testbentest@gmail.com"
-              }
+    const[employees,setEmployees]=useState([])
+    const navigator=useNavigate();
+    useEffect(()=>{
+      listEmployeees().then((Response)=>{
+            setEmployees(Response.data);
+            console.log('use effect called');
+      }).catch(error=>console.error(error))
 
-
-      ]
+    },[])
+    function addNewEmlpoyee(){
+      navigator('/add-employee')
+    }
   return (
-    <div>
-      <h2>List of Employees</h2>
-      <table>
+    <div className='container'>
+      <h2 className='text-center'>List of Employees</h2>
+     
+      <table className='table table-striped table-bordered '>
             <thead>
                   <tr>
-                        <tr>Employee Id</tr>
-                        <tr>Employee first Name</tr>
-                        <tr>Employee Last Name</tr>
-                        <tr>Employee Email Id</tr>
+                        <th>Employee Id</th>
+                        <th>Employee first Name</th>
+                        <th>Employee Last Name</th>
+                        <th>Employee Email Id</th>
                   </tr>
             </thead>
             <tbody>
 
               {
-                  dummyData.map(employee => 
+                  employees.map(employee => 
                      <tr key={employee.id}>
                         <td>{employee.id}</td>
                         <td>{employee.firstName}</td>
@@ -51,6 +44,7 @@ const ListEmployeeComponent = () => {
               }
             </tbody>
       </table>
+      <button type="button" className="btn btn-primary mb-2 d-block mx-auto" onClick={addNewEmlpoyee}>Add Employee</button>
     </div>
   )
 }
